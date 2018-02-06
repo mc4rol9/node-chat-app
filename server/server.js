@@ -1,5 +1,5 @@
 //
-// APP ROOT
+// CHAT APP - ROOT
 //
 
 // LOAD IN MODULES
@@ -21,9 +21,23 @@ var io = socketIO(server);
 
 // config express static middleware
 app.use(express.static(publicPath));
-// listen for a new connection events
+
+// listen for new connection events
 io.on('connection', (socket) => {
     console.log('New user connected');
+
+    // newMessage emitter
+    socket.emit('newMessage', {
+        from: 'Ana',
+        text: 'Hi!',
+        cretadedAt: 123123
+    });
+
+    // createMessage listener
+    socket.on('createMessage', (message) => {
+        console.log('createMessage', message);
+    });
+
     // disconnection listener
     socket.on('disconnect', () => {
         console.log('User disconnected');
