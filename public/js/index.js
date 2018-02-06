@@ -6,12 +6,6 @@ var socket = io();
 // connection listener
 socket.on('connect', function() {
     console.log('Connected to server');
-
-    // createMessage emitter
-    socket.emit('createMessage', {
-        from: 'Carol',
-        text: 'Hello there!'
-    });
 });
 
 // disconnection listener

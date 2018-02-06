@@ -26,16 +26,15 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) => {
     console.log('New user connected');
 
-    // newMessage emitter
-    socket.emit('newMessage', {
-        from: 'Ana',
-        text: 'Hi!',
-        cretadedAt: 123123
-    });
-
     // createMessage listener
     socket.on('createMessage', (message) => {
         console.log('createMessage', message);
+        // newMessage emitter
+        io.emit('newMessage', {
+            from: message.from,
+            text: message.text,
+            cretadedAt: new Date().getTime()
+        });
     });
 
     // disconnection listener
