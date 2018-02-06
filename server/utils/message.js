@@ -2,12 +2,16 @@
 // CHAT APP - MESSAGE UTILS
 // 
 
+// LOAD IN MODULES
+const moment = require('moment');
+
+// CREATE MESSAGE HENDLERS/MODULES
 // generate msg function
 var generateMessage = (from, text) => {
     return {
         from,
         text,
-        createdAt: new Date().getTime()
+        createdAt: moment().valueOf()
     };
 };
 
@@ -16,9 +20,9 @@ var generateLocationMessage = (from, latitude, longitude) => {
     return {
         from,
         url: `https://www.google.com/maps?q=${latitude},${longitude}`,
-        createdAt: new Date().getTime()
+        createdAt: moment().valueOf()
     };
 };
 
-// export msg utils
+// EXPORT MESSAGE MODULES
 module.exports = {generateMessage, generateLocationMessage};
