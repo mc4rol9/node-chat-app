@@ -30,29 +30,33 @@
 
     <!-- MUSTACHE TEMPLATES -->
     <script id="message-template" type="text/template">
-        <div class="message__title">
-            <h4>{{from}}</h4>
-            <span>{{createdAt}}</span>
-            </br>   
-        </div>
-        <div class="message__body">
-            <p>{{text}}</p>
-            </br>
-        </div>
+        <li class="message">
+            <div class="message__title">
+                <h4>{{from}}</h4>
+                <span>{{createdAt}}</span>
+                </br>   
+            </div>
+            <div class="message__body">
+                <p>{{text}}</p>
+                </br>
+            </div>
+        </li>
     </script>
 
     <script id="location-message-template" type="text/template">
-        <div class="message__title">
-            <h4>{{from}}</h4>
-            <span>{{createdAt}}</span>
-            </br>   
-        </div>
-        <div class="message__body">
-            <p>
-                <a href="{{url}}" target="_blank">My current location</a>
-            </p>
-            </br>
-        </div>
+        <li class="message">
+            <div class="message__title">
+                <h4>{{from}}</h4>
+                <span>{{createdAt}}</span>
+                </br>   
+            </div>
+            <div class="message__body">
+                <p>
+                    <a href="{{url}}" target="_blank">My current location</a>
+                </p>
+                </br>
+            </div>
+        </li>
     </script>
   
     <!-- LOAD IN SCRIPTS -->
