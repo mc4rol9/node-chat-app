@@ -36,10 +36,11 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined.'));
 
     // createMessage listener
-    socket.on('createMessage', (message) => {
+    socket.on('createMessage', (message, callback) => {
         console.log('createMessage', message);
         // new message emitter
         io.emit('newMessage', generateMessage(message.from, message.text));
+        callback('This is from the server.');
     });
 
     // disconnection listener
