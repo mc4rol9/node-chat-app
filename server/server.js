@@ -9,7 +9,7 @@ const express = require('express');
 const socketIO = require('socket.io');
 
 //LOAD IN PROJECT FILES
-const {generateMessage} = require('./utils/message');
+const {generateMessage, generateLocationMessage} = require('./utils/message');
 
 // CONFIG MODULES
 const publicPath = path.join(__dirname, '../public');
@@ -41,6 +41,11 @@ io.on('connection', (socket) => {
         // new message emitter
         io.emit('newMessage', generateMessage(message.from, message.text));
         callback('This is from the server.');
+    });
+
+    // createLocationMessage listener
+    socket.on('createLocationMessage', (coords) => {
+        io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
     });
 
     // disconnection listener
