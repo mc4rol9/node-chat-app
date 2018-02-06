@@ -8,6 +8,9 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
+//LOAD IN PROJECT FILES
+const {generateMessage} = require('./utils/message');
+
 // CONFIG MODULES
 const publicPath = path.join(__dirname, '../public');
 // define port to work both local or online
@@ -27,27 +30,16 @@ io.on('connection', (socket) => {
     console.log('New user connected');
     
     // welcome message
-    socket.emit('newMessage', {
-        from: 'Admin',
-        text: 'Welcome to the Chat App',
-        cretadedAt: new Date().getTime()
-    });
-
+    socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app.'));
+    
     // new user joined message
-    socket.broadcast.emit('newMessage', {
-        from: 'Admin',
-        text: 'New User Joined',
-        cretadedAt: new Date().getTime()
-    });
+    socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined.'));
 
     // createMessage listener
     socket.on('createMessage', (message) => {
         console.log('createMessage', message);
-        io.emit('newMessage', {
-            from: message.from,
-            text: message.text,
-            cretadedAt: new Date().getTime()
-        });
+        // new message emitter
+        io.emit('newMessage', generateMessage(message.from, message.text));
     });
 
     // disconnection listener
