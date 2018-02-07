@@ -23,12 +23,38 @@ function scrollToBottom () {
 
 // connection listener
 socket.on('connect', function() {
-    console.log('Connected to server');
+    // get the params from location
+    var params = jQuery.deparam(window.location.search);
+
+    // join emitter 
+    socket.emit('join', params, function(err) {
+        if (err) {
+            // popup the error msg
+            alert(err);
+            // redirect to home
+            window.location.href = '/';
+        } else {
+            console.log('No error');
+        }
+    });
 });
 
 // disconnection listener
 socket.on('disconnect', function() {
     console.log('Disconnected from server');
+});
+
+// update user list listener
+socket.on('updateUserList', function (users) {
+    var ol = jQuery('<ol></ol>');
+
+    // append new users to the list
+    users.forEach( function (user) {
+        ol.append(jQuery('<li></li>').text(user))
+    });
+
+    // render the list to the DOM
+    jQuery('#users').html(ol);
 });
 
 // newMessage listener

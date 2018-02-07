@@ -5,7 +5,7 @@
 // LOAD IN MODULES
 const moment = require('moment');
 
-// CREATE MESSAGE HENDLERS/MODULES
+// CREATE MESSAGE HANDLERS/MODULES
 // generate msg function
 var generateMessage = (from, text) => {
     return {

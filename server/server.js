@@ -10,6 +10,8 @@ const socketIO = require('socket.io');
 
 //LOAD IN PROJECT FILES
 const {generateMessage, generateLocationMessage} = require('./utils/message');
+const {isRealString} = require('./utils/validation');
+const {Users} = require('./utils/users');
 
 // CONFIG MODULES
 const publicPath = path.join(__dirname, '../public');
@@ -21,6 +23,8 @@ var app = express();
 var server = http.createServer(app);
 // config the server to use socketIO
 var io = socketIO(server);
+// new users instance
+var users = new Users();
 
 // config express static middleware
 app.use(express.static(publicPath));
@@ -28,12 +32,31 @@ app.use(express.static(publicPath));
 // listen for new connection events
 io.on('connection', (socket) => {
     console.log('New user connected');
-    
-    // welcome message
-    socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app.'));
-    
-    // new user joined message
-    socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined.'));
+
+    // join listener
+    socket.on('join', (params, callback) => {
+        // validate params name and room
+        if (!isRealString(params.name) || !isRealString(params.room)) {
+            return callback('Name and room are required.');
+        }
+
+        // user join a room
+        socket.join(params.room);
+        // remove user from previous room
+        users.removeUser(socket.id);
+        // add user to new room
+        users.addUser(socket.id, params.name, params.room);
+
+        // updateUserList emitter 
+        io.to(params.room).emit('updateUserList', users.getUserList(params.room));
+
+        // welcome message to all users no matter the room
+        socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app.'));
+        
+        // broadcast msg to all users from specific room - params.room
+        socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined.`));
+        callback();
+    });
 
     // createMessage listener
     socket.on('createMessage', (message, callback) => {
@@ -50,7 +73,14 @@ io.on('connection', (socket) => {
 
     // disconnection listener
     socket.on('disconnect', () => {
-        console.log('User disconnected');
+        var user = users.removeUser(socket.id);
+
+        if (user) {
+            // update the users list
+            io.to(user.room).emit('updateUserList', users.getUserList(user.room));
+            // emit a message the users at room
+            io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left`));
+        }
     });
 });
 
